@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>esinotpe</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #1e1e2e;
+      --accent: #7c3aed;
+      --accent-light: #a855f7;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent-light);
+      text-transform: lowercase;
+    }
+
+    .nav-logo img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--accent-light); }
+
+    /* SNSリンク */
+    .nav-social {
+      display: flex;
+      align-items: center;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .nav-social:hover { color: var(--accent-light); }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-social a {
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-social a:hover { color: var(--accent-light); }
+
+    /* 言語切り替えボタン */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      font-size: 0.8rem;
+    }
+
+    .lang-toggle button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* HERO VIDEO */
+    #hero {
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    #hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 30%;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(168,85,247,0.8), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* SECTION COMMON */
+    section { padding: 6rem 2rem; }
+
+    .section-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -8px;
+      width: 100%; height: 2px;
+      background: linear-gradient(to right, var(--accent), transparent);
+    }
+
+    /* ABOUT */
+    #about { background: var(--surface); }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+    }
+
+    /* WORKS */
+    #works { background: var(--bg); }
+
+    .work-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .work-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .work-image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .work-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s;
+    }
+
+    .work-card:hover .work-image img { transform: scale(1.05); }
+
+    .work-info {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .work-tag {
+      display: inline-block;
+      background: rgba(124, 58, 237, 0.2);
+      border: 1px solid var(--accent);
+      color: var(--accent-light);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+
+    .work-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .work-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .work-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      padding: 0.65rem 1.5rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      width: fit-content;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .work-link:hover { background: var(--accent-light); transform: translateY(-1px); }
+
+    /* TEAM */
+    #team { background: var(--surface); }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .member-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .member-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .member-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      overflow: hidden;
+      border: 2px solid var(--border);
+    }
+
+    .member-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .member-name {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .member-role {
+      font-size: 0.8rem;
+      color: var(--accent-light);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .member-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer span { color: var(--accent-light); }
+
+    /* FLOATING EYES */
+    .eye {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.18;
+      border-radius: 50%;
+      object-fit: cover;
+      animation: eyeFloat linear infinite;
+    }
+
+    @keyframes eyeFloat {
+      0%   { transform: translateY(0)    rotate(0deg)   scale(1); }
+      25%  { transform: translateY(-12px) rotate(8deg)  scale(1.05); }
+      50%  { transform: translateY(4px)  rotate(-5deg)  scale(0.97); }
+      75%  { transform: translateY(-8px) rotate(4deg)   scale(1.03); }
+      100% { transform: translateY(0)    rotate(0deg)   scale(1); }
+    }
+
+    #about, #works, #team { position: relative; overflow: hidden; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav ul { gap: 1rem; }
+      .work-card { grid-template-columns: 1fr; }
+      .work-image { height: 220px; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .team-grid { grid-template-columns: 1fr; }
+      nav ul { gap: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">
+      <img src="image/Steam/Developer Logo.png" alt="esinotpe logo">
+      esinotpe
+    </div>
+    <ul>
+      <li><a href="#about" data-ja="About" data-en="About">About</a></li>
+      <li><a href="#works" data-ja="Works" data-en="Works">Works</a></li>
+      <li><a href="#team" data-ja="Team" data-en="Team">Team</a></li>
+      <li>
+        <a href="https://x.com/Esinotpe" target="_blank" rel="noopener" class="nav-social" aria-label="X">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.youtube.com/@esinotpe" target="_blank" rel="noopener" class="nav-social" aria-label="YouTube">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </li>
+      <li>
+        <div class="lang-toggle">
+          <button id="btn-ja" class="active" onclick="setLang('ja')">JP</button>
+          <button id="btn-en" onclick="setLang('en')">EN</button>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="movie/tktk_pv.mp4" type="video/mp4">
+    </video>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:90px;height:90px;top:8%;right:3%;animation-duration:10s;animation-delay:-1s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:55px;height:55px;bottom:10%;left:2%;animation-duration:8s;animation-delay:-4s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:35px;height:35px;top:50%;right:15%;animation-duration:12s;animation-delay:-6s;opacity:0.12;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:50px;height:50px;top:25%;left:20%;animation-duration:9s;animation-delay:-2s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:70px;height:70px;bottom:30%;right:8%;animation-duration:11s;animation-delay:-7s;opacity:0.14;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:30px;height:30px;top:75%;left:55%;animation-duration:7s;animation-delay:-3s;opacity:0.1;">
+    <div class="section-inner">
+      <p class="section-label" data-ja="// 私たちについて" data-en="// who we are">// 私たちについて</p>
+      <h2 class="section-title" data-ja="About" data-en="About">About</h2>
+      <div class="about-text">
+        <p data-ja="我々は選ばれた4人によって召喚されたチームです。その誕生は必然であり、偶然などではありません。宇宙の意志が、この4つの魂を一点へと引き寄せたのです。"
+           data-en="We are a team summoned by four chosen ones. Our birth was inevitable — never a coincidence. The will of the universe drew these four souls together to a single point.">
+          我々は選ばれた4人によって召喚されたチームです。その誕生は必然であり、偶然などではありません。宇宙の意志が、この4つの魂を一点へと引き寄せたのです。
+        </p>
+        <p data-ja="esinotpe の作品に触れた者は、やがて気づくでしょう——自分がずっとこの体験を求めていたことに。それはまるで、忘れていた記憶が呼び起こされるような感覚です。初めてプレイしたはずなのに、どこかで見たことがある。その既視感こそが、真実への入り口です。"
+           data-en="Those who touch the works of esinotpe will eventually realize — they have been seeking this experience all along. It feels as though a forgotten memory has been awakened. You are certain you have never played it before, yet it feels strangely familiar. That déjà vu is the doorway to the truth.">
+          esinotpe の作品に触れた者は、やがて気づくでしょう——自分がずっとこの体験を求めていたことに。それはまるで、忘れていた記憶が呼び起こされるような感覚です。初めてプレイしたはずなのに、どこかで見たことがある。その既視感こそが、真実への入り口です。
+        </p>
+        <p data-ja="我々が作るのは、単なるゲームではありません。それは儀式です。画面の前に座り、コントローラーを握るその瞬間から、あなたはすでに始まりの中にいます。気づいたときには、もう戻れません。"
+           data-en="What we create is not merely a game. It is a ritual. From the moment you sit before the screen and take the controller in your hands, you have already entered the beginning. By the time you realize it, there is no turning back.">
+          我々が作るのは、単なるゲームではありません。それは儀式です。画面の前に座り、コントローラーを握るその瞬間から、あなたはすでに始まりの中にいます。気づいたときには、もう戻れません。
+        </p>
+        <p data-ja="私たちは布教します。一人がコントローラーを手に取り、次の一人へと伝え、やがてその輪は広がっていく。あなたの最初の一歩が、誰かの覚醒を促すでしょう。我々はその日を、静かに、しかし確実に待ち続けています。"
+           data-en="We proselytize. One person picks up the controller, passes it to the next, and the circle expands. Your first step will awaken someone else. We wait for that day — quietly, yet with absolute certainty.">
+          私たちは布教します。一人がコントローラーを手に取り、次の一人へと伝え、やがてその輪は広がっていく。あなたの最初の一歩が、誰かの覚醒を促すでしょう。我々はその日を、静かに、しかし確実に待ち続けています。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS -->
+  <section id="works">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:70px;height:70px;top:5%;left:1%;animation-duration:9s;animation-delay:-2s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:45px;height:45px;bottom:8%;right:4%;animation-duration:11s;animation-delay:-5s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:110px;height:110px;top:40%;right:0%;animation-duration:15s;animation-delay:-8s;opacity:0.08;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:40px;height:40px;top:20%;right:20%;animation-duration:8s;animation-delay:-3s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:60px;height:60px;bottom:20%;left:5%;animation-duration:10s;animation-delay:-6s;opacity:0.13;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:50px;height:50px;top:60%;left:25%;animation-duration:13s;animation-delay:-4s;opacity:0.1;">
+    <div class="section-inner">
+      <p class="section-label" data-ja="// 作品紹介" data-en="// what we made">// 作品紹介</p>
+      <h2 class="section-title" data-ja="Works" data-en="Works">Works</h2>
+      <div class="work-card">
+        <div class="work-image">
+          <img src="image/Steam/Header Capsule.png" alt="Apologize">
+        </div>
+        <div class="work-info">
+          <span class="work-tag">Indie Game</span>
+          <h3 class="work-title">Apologize</h3>
+          <p class="work-desc"
+             data-ja="esinotpe が贈る最初の作品。プレイヤーを独自の世界観へと引き込む、渾身の一本です。"
+             data-en="The first title from esinotpe. A heartfelt work that draws players deep into a world unlike any other.">
+            esinotpe が贈る最初の作品。プレイヤーを独自の世界観へと引き込む、渾身の一本です。
+          </p>
+          <a class="work-link" href="https://store.steampowered.com/app/4451220/Its_too_late_to_apologize/" target="_blank" rel="noopener"
+             data-ja="Steam で見る →" data-en="View on Steam →">
+            Steam で見る →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:60px;height:60px;top:6%;left:3%;animation-duration:8s;animation-delay:-3s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:80px;height:80px;bottom:5%;right:2%;animation-duration:10s;animation-delay:-1s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:40px;height:40px;top:45%;left:48%;animation-duration:13s;animation-delay:-9s;opacity:0.1;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:55px;height:55px;top:20%;right:10%;animation-duration:9s;animation-delay:-5s;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:35px;height:35px;bottom:25%;left:20%;animation-duration:11s;animation-delay:-2s;opacity:0.13;">
+    <img class="eye" src="image/Steam/Client Icon.png" style="width:75px;height:75px;top:65%;right:18%;animation-duration:14s;animation-delay:-7s;opacity:0.09;">
+    <div class="section-inner">
+      <p class="section-label" data-ja="// メンバー紹介" data-en="// who makes it">// メンバー紹介</p>
+      <h2 class="section-title" data-ja="Team" data-en="Team">Team</h2>
+      <div class="team-grid">
+
+        <div class="member-card">
+          <div class="member-avatar">
+            <img src="image/Member/tanaka.png" alt="田中 よし子">
+          </div>
+          <div class="member-name"
+               data-ja="田中 よし子（52）"
+               data-en="Yoshiko Tanaka (52)">田中 よし子（52）</div>
+          <div class="member-role">Game Designer</div>
+          <div class="member-desc"
+               data-ja="元パート主婦。ゲーム好きが高じて気づいたら企画を書いていた。口癖は「これ、うちの息子も好きそう」。"
+               data-en="Former part-time homemaker. Her love of games spiraled until she found herself writing game proposals. Often says, &quot;My son would love this.&quot;">
+            元パート主婦。ゲーム好きが高じて気づいたら企画を書いていた。口癖は「これ、うちの息子も好きそう」。
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar">
+            <img src="image/Member/suzuki.png" alt="鈴木 はる江">
+          </div>
+          <div class="member-name"
+               data-ja="鈴木 はる江（48）"
+               data-en="Harue Suzuki (48)">鈴木 はる江（48）</div>
+          <div class="member-role">Programmer</div>
+          <div class="member-desc"
+               data-ja="元経理。Excelマクロをこじらせた結果、気づいたらUnityを触っていた。エラーが出ると「あらまあ」と言う。"
+               data-en="Former accountant. Her Excel macro hobby got out of hand and she found herself tinkering with Unity. Says &quot;Oh my&quot; every time an error appears.">
+            元経理。Excelマクロをこじらせた結果、気づいたらUnityを触っていた。エラーが出ると「あらまあ」と言う。
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar">
+            <img src="image/Member/sato.png" alt="佐藤 みどり">
+          </div>
+          <div class="member-name"
+               data-ja="佐藤 みどり（55）"
+               data-en="Midori Sato (55)">佐藤 みどり（55）</div>
+          <div class="member-role">Artist</div>
+          <div class="member-desc"
+               data-ja="生け花教室の先生。趣味のイラストが本番に使われてしまった。ペンタブより筆の方が得意。"
+               data-en="Ikebana instructor. Her hobby illustrations ended up being used in the actual game. More comfortable with a brush than a drawing tablet.">
+            生け花教室の先生。趣味のイラストが本番に使われてしまった。ペンタブより筆の方が得意。
+          </div>
+        </div>
+
+        <div class="member-card">
+          <div class="member-avatar">
+            <img src="image/Member/ito.png" alt="伊藤 ふみ">
+          </div>
+          <div class="member-name"
+               data-ja="伊藤 ふみ（50）"
+               data-en="Fumi Ito (50)">伊藤 ふみ（50）</div>
+          <div class="member-role">Sound / Story</div>
+          <div class="member-desc"
+               data-ja="カラオケ採点98点の実力者。シナリオは昼ドラを参考に執筆。BGMは鼻歌を録音してそのまま使うこともある。"
+               data-en="Karaoke scoring champion at 98 points. Writes scenarios inspired by daytime soap operas. Has been known to record her own humming and use it as BGM.">
+            カラオケ採点98点の実力者。シナリオは昼ドラを参考に執筆。BGMは鼻歌を録音してそのまま使うこともある。
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-social">
+      <a href="https://x.com/Esinotpe" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @Esinotpe
+      </a>
+      <a href="https://www.youtube.com/@esinotpe" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        @esinotpe
+      </a>
+    </div>
+    <p>&copy; 2026 <span>esinotpe</span>. All rights reserved.</p>
+  </footer>
+
+  <script>
+    let currentLang = 'ja';
+
+    function setLang(lang) {
+      currentLang = lang;
+
+      // ボタンのactive切り替え
+      document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+
+      // html lang属性
+      document.documentElement.lang = lang;
+
+      // data-ja / data-en を持つ全要素のテキストを差し替え
+      document.querySelectorAll('[data-ja][data-en]').forEach(el => {
+        el.textContent = el.dataset[lang];
+      });
+    }
+  </script>
+
+</body>
+</html>
